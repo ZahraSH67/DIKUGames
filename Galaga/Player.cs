@@ -1,5 +1,6 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
+using System;
 namespace Galaga {
     public class Player {
         private Entity entity;
@@ -13,6 +14,8 @@ namespace Galaga {
         }
         public void Render() {
             entity.RenderEntity();
+            //System.Console.WriteLine(shape.Position.X);
+            
         }
         private void UpdateDirection () {
             shape.Direction.X = moveLeft + moveRight;
@@ -33,20 +36,11 @@ namespace Galaga {
         }
 
         public void Move() {
-            if (shape.Direction.X > 0 && shape.Position.X <1){
-                if (shape.Direction.Y < 0 && shape.Position.Y > 0){
-                    shape.Move();
-                }else if (shape.Direction.Y > 0 && shape.Position.Y < 1) {
-                    shape.Move();
-                }    
-            }
-            else if (shape.Direction.X < 0 && shape.Position.X > 0) {
-                if (shape.Direction.Y < 0 && shape.Position.Y > 0){
-                    shape.Move();
-                }else if (shape.Direction.Y > 0 && shape.Position.Y < 1) {
-                    shape.Move();
-                } 
-            }            
+            if (shape.Direction.X >= 0 && shape.Position.X <= 0.9){
+                shape.Move();
+            } else if (shape.Direction.X <= 0 && shape.Position.X >= 0) {
+                shape.Move(); 
+            }        
         }
     }
 }
