@@ -42,5 +42,7 @@ namespace Galaga {
                 shape.Move(); 
             }        
         }
+    //    public GetPosition() {
+    //    }
     }
 }

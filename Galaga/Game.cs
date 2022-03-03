@@ -89,6 +89,9 @@ namespace Galaga
                 case KeyboardKey.Right :
                     player.SetMoveRight(true);
                     break;
+    //            case KeyboardKey.Space :
+    //                playerShots.Iterate(true);
+    //                break; 
             }
         }
         public void KeyRelease(KeyboardKey key) {
@@ -101,6 +104,9 @@ namespace Galaga
                 case KeyboardKey.Right : 
                     player.SetMoveRight(false);
                     break;
+    //           case KeyboardKey.Space :
+    //                playerShots.Iterate(false);
+    //                break;
                 case KeyboardKey.Escape :
                     window.CloseWindow();
                     break;    
