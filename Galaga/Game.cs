@@ -17,6 +17,8 @@ namespace Galaga
         private Player player;
         private GameEventBus eventBus;
         private EntityContainer<Enemy> enemies;
+        private EntityContainer<PlayerShot> playerShots;
+        private IBaseImage playerShotImage;
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // TODO: Set key event handler (inherited window field of DIKUGame class)
             player = new Player(
@@ -26,6 +28,7 @@ namespace Galaga
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
             window.SetKeyEventHandler(KeyHandler);
             eventBus.Subscribe(GameEventType.InputEvent, this);    
+            
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
@@ -33,7 +36,23 @@ namespace Galaga
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, images)));
+
+            playerShots = new EntityContainer<PlayerShot>();
+            playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
             }
+
+        //    private void IterateShots() {
+        //        playerShots.Iterate(shot => {
+        //            // TODO: move the shot's shape
+        //            if ( /* TODO: guard against window borders */ ) {
+                        // TODO: delete shot
+        //            } else {
+        //                enemies.Iterate(enemy => {
+                            // TODO: if collision btw shot and enemy -> delete both
+        //               }); 
+        //           }
+        //        }); 
+        //    }
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
@@ -53,7 +72,6 @@ namespace Galaga
 
         public override void Render() {
             player.Render();
-
             enemies.RenderEntities();
         }
 
