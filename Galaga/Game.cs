@@ -47,7 +47,7 @@ namespace Galaga
             playerShots.Iterate(shot => {
                 // TODO: move the shot's shape
                 shot.Shape.Move();
-                if (shot.Shape.Position.X < 0 || shot.Shape.Position.X > 1) {
+                if (shot.Shape.Position.X < 0 || shot.Shape.Position.X > 1 || shot.Shape.Position.Y > 1) {
                     shot.DeleteEntity();
                 } else {
                     enemies.Iterate(enemy => {
@@ -79,12 +79,14 @@ namespace Galaga
         public override void Render() {
             player.Render();
             enemies.RenderEntities();
+            playerShots.RenderEntities();
         }
 
         public override void Update()
         {
             eventBus.ProcessEventsSequentially();
             player.Move();
+            IterateShots();
         }
         public void KeyPress(KeyboardKey key) {
             // TODO: switch on key string and set the player's move direction
@@ -95,9 +97,6 @@ namespace Galaga
                 case KeyboardKey.Right :
                     player.SetMoveRight(true);
                     break;
-    //            case KeyboardKey.Space :
-    //                playerShots.Iterate(true);
-    //                break; 
             }
         }
         public void KeyRelease(KeyboardKey key) {
@@ -110,9 +109,12 @@ namespace Galaga
                 case KeyboardKey.Right : 
                     player.SetMoveRight(false);
                     break;
-    //           case KeyboardKey.Space :
-    //                playerShots.Iterate(false);
-    //                break;
+               case KeyboardKey.Space :
+                    PlayerShot sht = new PlayerShot(
+                        new DynamicShape(player.GetPosition(), new Vec2F(0.008f, 0.021f), new Vec2F(0.0f, 0.1f)),
+                        playerShotImage);
+                    playerShots.AddEntity(sht);
+                    break;
                 case KeyboardKey.Escape :
                     window.CloseWindow();
                     break;    

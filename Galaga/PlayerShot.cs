@@ -10,7 +10,7 @@ namespace Galaga {
         private static Vec2F extent;
         private static Vec2F direction;
         
-        private PlayerShot(DynamicShape shape, IBaseImage image,Vec2F vec) : base(shape,image){
+        public PlayerShot(DynamicShape shape, IBaseImage image) : base(shape,image){
             entity = new Entity(shape, image);
             extent = new Vec2F(0.008f, 0.021f);
             direction = new Vec2F(0.0f, 0.1f);
