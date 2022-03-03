@@ -42,7 +42,8 @@ namespace Galaga {
                 shape.Move(); 
             }        
         }
-    //    public GetPosition() {
-    //    }
+        public DIKUArcade.Math.Vec2F GetPosition() {
+            return shape.Position;
+        }
     }
 }
