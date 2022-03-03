@@ -20,6 +20,9 @@ namespace Galaga
         private EntityContainer<Enemy> enemies;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
+        private AnimationContainer enemyExplosions;
+        private List<Image> explosionStrides;
+        private const int EXPLOSION_LENGTH_MS = 500;
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // TODO: Set key event handler (inherited window field of DIKUGame class)
             player = new Player(
@@ -37,10 +40,12 @@ namespace Galaga
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, images)));
-
+            }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
-            }
+            
+            enemyExplosions = new AnimationContainer(numEnemies);
+            explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
         }
 
         private void IterateShots() {
@@ -53,8 +58,9 @@ namespace Galaga
                     enemies.Iterate(enemy => {
                         CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
                         if (col.Collision == true){
+                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             shot.DeleteEntity();
-                            enemy.DeleteEntity();
+                            enemy.DeleteEntity();                            
                         }
                     });
                 }
@@ -80,6 +86,7 @@ namespace Galaga
             player.Render();
             enemies.RenderEntities();
             playerShots.RenderEntities();
+            enemyExplosions.RenderAnimations();
         }
 
         public override void Update()
@@ -133,6 +140,13 @@ namespace Galaga
                     break;
                 }
             }
+        }
+        public void AddExplosion(Vec2F position, Vec2F extent) {
+            // TODO: add explosion to the AnimationContainer
+            
+            StationaryShape sh1 = new StationaryShape(position, extent);
+            ImageStride img = new ImageStride(8,explosionStrides);
+            enemyExplosions.AddAnimation(sh1, EXPLOSION_LENGTH_MS/8,img);
         }
     }
 }
