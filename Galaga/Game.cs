@@ -8,6 +8,7 @@ using DIKUArcade.Math;
 using System.Security.Principal;
 using System.Collections.Generic;
 using DIKUArcade.Events;
+using DIKUArcade.Physics;
 using System;
 
 namespace Galaga
@@ -40,19 +41,24 @@ namespace Galaga
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
             }
+        }
 
-        //    private void IterateShots() {
-        //        playerShots.Iterate(shot => {
-        //            // TODO: move the shot's shape
-        //            if ( /* TODO: guard against window borders */ ) {
-                        // TODO: delete shot
-        //            } else {
-        //                enemies.Iterate(enemy => {
-                            // TODO: if collision btw shot and enemy -> delete both
-        //               }); 
-        //           }
-        //        }); 
-        //    }
+        private void IterateShots() {
+            playerShots.Iterate(shot => {
+                // TODO: move the shot's shape
+                shot.Shape.Move();
+                if (shot.Shape.Position.X < 0 || shot.Shape.Position.X > 1) {
+                    shot.DeleteEntity();
+                } else {
+                    enemies.Iterate(enemy => {
+                        CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
+                        if (col.Collision == true){
+                            shot.DeleteEntity();
+                            enemy.DeleteEntity();
+                        }
+                    });
+                }
+            });
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
