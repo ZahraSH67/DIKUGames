@@ -31,8 +31,8 @@ namespace Galaga
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
             window.SetKeyEventHandler(KeyHandler);
-            eventBus.Subscribe(GameEventType.InputEvent, this);    
-            
+            eventBus.Subscribe(GameEventType.InputEvent, this); 
+            eventBus.Subscribe(GameEventType.InputEvent, player);
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
@@ -79,8 +79,8 @@ namespace Galaga
                     break;
             }
             gameEvent.IntArg1 = (int) key;
-            ProcessEvent(gameEvent);
-        } // TODO: Outcomment
+            eventBus.RegisterEvent(gameEvent);
+        }
 
         public override void Render() {
             player.Render();
@@ -95,27 +95,9 @@ namespace Galaga
             player.Move();
             IterateShots();
         }
-        public void KeyPress(KeyboardKey key) {
-            // TODO: switch on key string and set the player's move direction
-            switch (key) {
-                case KeyboardKey.Left :
-                    player.SetMoveLeft(true);
-                    break;
-                case KeyboardKey.Right :
-                    player.SetMoveRight(true);
-                    break;
-            }
-        }
+        public void KeyPress(KeyboardKey key) {}
         public void KeyRelease(KeyboardKey key) {
-            // TODO: switch on key string and disable the player's move direction
-            // TODO: Close window if escape is pressed
             switch (key) {
-                case KeyboardKey.Left :
-                    player.SetMoveLeft(false);
-                    break;
-                case KeyboardKey.Right : 
-                    player.SetMoveRight(false);
-                    break;
                case KeyboardKey.Space :
                     PlayerShot sht = new PlayerShot(
                         new DynamicShape(player.GetPosition(), new Vec2F(0.008f, 0.021f), new Vec2F(0.0f, 0.1f)),
