@@ -34,12 +34,14 @@ namespace Galaga
             eventBus.Subscribe(GameEventType.InputEvent, this); 
             eventBus.Subscribe(GameEventType.InputEvent, player);
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
+            var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
             for (int i = 0; i < numEnemies; i++) {
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images)));
+                    new ImageStride(80, images),
+                    new ImageStride(30,images_red)));
             }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
@@ -58,9 +60,12 @@ namespace Galaga
                     enemies.Iterate(enemy => {
                         CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
                         if (col.Collision == true){
-                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
-                            shot.DeleteEntity();
-                            enemy.DeleteEntity();                            
+                            enemy.hitPointsDecrease();
+                            if (enemy.isAlive() == false) {
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                                shot.DeleteEntity();
+                                enemy.DeleteEntity(); 
+                            }                                             
                         }
                     });
                 }
