@@ -23,29 +23,43 @@ namespace Galaga
         private AnimationContainer enemyExplosions;
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
+        private Score scoreHandler;
+
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // TODO: Set key event handler (inherited window field of DIKUGame class)
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
+
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+
             window.SetKeyEventHandler(KeyHandler);
+
             eventBus.Subscribe(GameEventType.InputEvent, this); 
             eventBus.Subscribe(GameEventType.InputEvent, player);
+
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
+            var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
             for (int i = 0; i < numEnemies; i++) {
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images)));
+                    new ImageStride(80, images),
+                    new ImageStride(30,images_red)));
             }
+
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
             
             enemyExplosions = new AnimationContainer(numEnemies);
             explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
+
+            var scorePos = new Vec2F(0.5f, 0.0f);
+            var scoreExt = new Vec2F(0.5f, 0.5f);
+            
+            scoreHandler = new Score(scorePos, scoreExt);
         }
 
         private void IterateShots() {
@@ -58,9 +72,13 @@ namespace Galaga
                     enemies.Iterate(enemy => {
                         CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
                         if (col.Collision == true){
-                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
-                            shot.DeleteEntity();
-                            enemy.DeleteEntity();                            
+                            enemy.hitPointsDecrease();
+                            if (enemy.isAlive() == false) {
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                                shot.DeleteEntity();
+                                enemy.DeleteEntity();
+                                scoreHandler.AddPoints();
+                            }                                             
                         }
                     });
                 }
@@ -87,6 +105,7 @@ namespace Galaga
             enemies.RenderEntities();
             playerShots.RenderEntities();
             enemyExplosions.RenderAnimations();
+            scoreHandler.RenderScore();
         }
 
         public override void Update()
