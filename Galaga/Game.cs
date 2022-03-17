@@ -27,16 +27,21 @@ namespace Galaga
         public int MaxEnemies {get;} = 10;
         private const int EXPLOSION_LENGTH_MS = 500;
         private ZigZagDown downMove = new ZigZagDown();
+        private Score scoreHandler;
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // TODO: Set key event handler (inherited window field of DIKUGame class)
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
+
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+
             window.SetKeyEventHandler(KeyHandler);
+
             eventBus.Subscribe(GameEventType.InputEvent, this); 
             eventBus.Subscribe(GameEventType.InputEvent, player);
+
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
             Enemies = new EntityContainer<Enemy>(MaxEnemies);
@@ -46,10 +51,16 @@ namespace Galaga
             squadron2.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
             Squadron3 squadron3 = new Squadron3(images,images_red);
             squadron3.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
+
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
             enemyExplosions = new AnimationContainer(MaxEnemies);
             explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
+
+            var scorePos = new Vec2F(0.5f, 0.0f);
+            var scoreExt = new Vec2F(0.5f, 0.5f);
+            
+            scoreHandler = new Score(scorePos, scoreExt);
         }
 
         private void IterateShots() {
@@ -67,6 +78,8 @@ namespace Galaga
                             if (enemy.isAlive() == false) {
                                 AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                                 enemy.DeleteEntity(); 
+                                scoreHandler.AddPoints();
+
                             }                                             
                         }
                     });
@@ -94,6 +107,7 @@ namespace Galaga
             Enemies.RenderEntities();
             playerShots.RenderEntities();
             enemyExplosions.RenderAnimations();
+            scoreHandler.RenderScore();
         }
 
         public override void Update()
