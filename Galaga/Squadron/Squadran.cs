@@ -40,7 +40,7 @@ namespace Galaga.Squadron {
             Enemies = new EntityContainer<Enemy>(MaxEnemies);
             for (int i = 0; i < MaxEnemies ; i++) {
                 Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.5f + (float)i * 0.1f, 0.5f + (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
+                    new DynamicShape(new Vec2F(0.4f + (float)i * 0.1f, 0.5f + (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStride),
                     new ImageStride(30, alternativeEnemyStride))); 
             }
@@ -57,7 +57,7 @@ namespace Galaga.Squadron {
             Enemies = new EntityContainer<Enemy>(MaxEnemies);
             for (int i = 0; i < MaxEnemies ; i++) {
                 Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.9f, 0.9f - (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
+                    new DynamicShape(new Vec2F(0.8f, 0.9f - (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStride),
                     new ImageStride(30, alternativeEnemyStride))); 
             }

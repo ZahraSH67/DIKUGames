@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using DIKUArcade.Events;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
+using Galaga.MovementStrategy;
 using System;
 
 namespace Galaga
 {
-    public class Game : DIKUGame, IGameEventProcessor, ISquadron
+    public class Game : DIKUGame, IGameEventProcessor
     {
         private Player player;
         private GameEventBus eventBus;
@@ -25,6 +26,7 @@ namespace Galaga
         private List<Image> explosionStrides;
         public int MaxEnemies {get;} = 10;
         private const int EXPLOSION_LENGTH_MS = 500;
+        private ZigZagDown downMove = new ZigZagDown();
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // TODO: Set key event handler (inherited window field of DIKUGame class)
             player = new Player(
@@ -98,6 +100,7 @@ namespace Galaga
         {
             eventBus.ProcessEventsSequentially();
             player.Move();
+            downMove.MoveEnemies(Enemies);
             IterateShots();
         }
         public void KeyPress(KeyboardKey key) {}
@@ -134,52 +137,6 @@ namespace Galaga
             StationaryShape sh1 = new StationaryShape(position, extent);
             ImageStride img = new ImageStride(8,explosionStrides);
             enemyExplosions.AddAnimation(sh1, EXPLOSION_LENGTH_MS/8,img);
-        }
-        public void CreateEnemies (List<Image> enemyStride, List<Image> alternativeEnemyStride) {
-            Enemies = new EntityContainer<Enemy>(MaxEnemies);
-            for (int i = 0; i < MaxEnemies / 2; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.2f, 0.9f ), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-            for (int i = MaxEnemies / 2; i < MaxEnemies ; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.2f + (float)(i - (MaxEnemies / 2)) * 0.2f, 0.8f ), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-        }
-        public void CreateEnemies2 (List<Image> enemyStride, List<Image> alternativeEnemyStride) {
-            Enemies = new EntityContainer<Enemy>(MaxEnemies);
-            for (int i = 0; i < MaxEnemies / 2 ; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f - (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-            for (int i = MaxEnemies / 2; i < MaxEnemies ; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.2f + (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-        }
-        public void CreateEnemies3
-         (List<Image> enemyStride, List<Image> alternativeEnemyStride) {
-            Enemies = new EntityContainer<Enemy>(MaxEnemies);
-            for (int i = 0; i < MaxEnemies / 2 ; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f - (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-            for (int i = 0; i < MaxEnemies / 2 ; i++) {
-                Enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.2f + (float)i * 0.1f, 0.9f - (float)i  * 0.1f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, enemyStride),
-                    new ImageStride(30, alternativeEnemyStride))); 
-            }
-        }     
+        }   
     }
 }
