@@ -19,10 +19,13 @@ namespace Galaga {
         }
 
         public void GameOver(EntityContainer<Enemy> enemies) {
+            
+
             foreach (Enemy enemy in enemies) {
-                if (enemy.Shape.Position.Y < _gameOverHeight)
+                if (enemy.Shape.Position.Y < _gameOverHeight) {
                     _state = gs.gameOver;
                 }
+            }
         }
     }
 }

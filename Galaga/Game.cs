@@ -50,7 +50,6 @@ namespace Galaga {
             squadron2.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
             Squadron3 squadron3 = new Squadron3(images,images_red);
             squadron3.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
-            theSquad = new Squadron1(images, images_red);
 
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
@@ -81,14 +80,16 @@ namespace Galaga {
                                 
                                 scoreHandler.AddPoints();
                                 // virker ikke 
-                                 if (Enemies.CountEntities() == 1) {
+                                if (Enemies.CountEntities() == 1) {
+                                    Enemies.ClearContainer();
+
                                     var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
                                     var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
 
                                     Squadron1 newSquad = new Squadron1(images, images_red);
                                     newSquad.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
 
-                                    downMove.movementSpeed++;
+                                    downMove.movementSpeed *= 2;
                                 }
                             }                                             
                         }
@@ -132,7 +133,7 @@ namespace Galaga {
                 IterateShots();
             }
 
-            gamestate.GameOver(Enemies);
+            //gamestate.GameOver(Enemies);       
         }
         public void KeyPress(KeyboardKey key) {}
         public void KeyRelease(KeyboardKey key) {

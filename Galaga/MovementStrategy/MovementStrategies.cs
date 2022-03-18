@@ -31,7 +31,7 @@ namespace Galaga.MovementStrategy {
         private float _period = 0.045f;
 
         private float _movementSpeed = 0.0003f;
-        public float movementSpeed {
+       public float movementSpeed {
             get { return _movementSpeed; }
             set { _movementSpeed = value; }
         }
