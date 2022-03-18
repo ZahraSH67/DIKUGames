@@ -9,7 +9,7 @@ namespace Galaga {
 
 
     public class Enemy : Entity {
-        private int hitpoints = 5;
+        private int hitpoints = 7;
         //private Graphics IBaseImage;
         public IBaseImage Enrage { get; set; }
         public Vec2F StartingPosition {get;set;}
@@ -19,13 +19,17 @@ namespace Galaga {
             StartingPosition = shape.Position;
         }
         
+        // Counts how much times the enemy can be hit before
+        // it gets enraged
         public void hitPointsDecrease() {
             hitpoints--;
-            if (hitpoints == 2) {
+            if (hitpoints == 3) {
                 Image = Enrage;
             }
         }
         
+        // checks if the enemy still has points left
+        // or if it should be terminated.
         public bool isAlive() {
             if (hitpoints > 0) {
                 return true;

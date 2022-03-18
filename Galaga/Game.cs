@@ -29,11 +29,12 @@ namespace Galaga
         private ZigZagDown downMove = new ZigZagDown();
         private Score scoreHandler;
         public Game(WindowArgs windowArgs) : base(windowArgs) {
-            // TODO: Set key event handler (inherited window field of DIKUGame class)
+            // Player is the avatar of the ship the player controls
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
 
+            // eventBus takes input and transform it to actions
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
 
@@ -42,6 +43,8 @@ namespace Galaga
             eventBus.Subscribe(GameEventType.InputEvent, this); 
             eventBus.Subscribe(GameEventType.InputEvent, player);
 
+            // Enemy are the enemies. Here we add them to the canvas,
+            // and have avatars for both regular blue and enraged red enemies
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
             Enemies = new EntityContainer<Enemy>(MaxEnemies);
@@ -52,11 +55,14 @@ namespace Galaga
             Squadron3 squadron3 = new Squadron3(images,images_red);
             squadron3.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
 
+            // playerShot is the avatar for the lasershots from the player
+            // When the shots collide with the enemies they'll explode.
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
             enemyExplosions = new AnimationContainer(MaxEnemies);
             explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
 
+            // Shows the score the player gets on the screen.
             var scorePos = new Vec2F(0.5f, 0.0f);
             var scoreExt = new Vec2F(0.5f, 0.5f);
             
@@ -65,11 +71,13 @@ namespace Galaga
 
         private void IterateShots() {
             playerShots.Iterate(shot => {
-                // TODO: move the shot's shape
+                // Makes the players shot move up, and
+                // delete the enemies when they've been shot enough.
                 shot.Shape.Move();
                 if (shot.Shape.Position.X < 0 || shot.Shape.Position.X > 1 || shot.Shape.Position.Y > 1) {
                     shot.DeleteEntity();
                 } else {
+                    // checks if the enemies has been hit and should be deleted in an explosion.
                     Enemies.Iterate(enemy => {
                         CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
                         if (col.Collision == true){
@@ -87,6 +95,7 @@ namespace Galaga
             });
         }
 
+        // Keyhandler checks if a key is pressed and when it is released.
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
             GameEvent gameEvent = new GameEvent();
             gameEvent.EventType = GameEventType.InputEvent;
@@ -117,7 +126,12 @@ namespace Galaga
             downMove.MoveEnemies(Enemies);
             IterateShots();
         }
+
+        // KeyPress gives the program on what the program 
+        // should do when a specific key is pressed.
         public void KeyPress(KeyboardKey key) {}
+        // KeyRelease gives the program on what the program 
+        // should do when a specific key is released.
         public void KeyRelease(KeyboardKey key) {
             switch (key) {
                case KeyboardKey.Space :
@@ -131,6 +145,8 @@ namespace Galaga
                     break;    
             }
         }
+
+        // ProcessEvent processes the the pressed keys and send the message
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.InputEvent) {
                 switch (gameEvent.Message) {
@@ -146,7 +162,7 @@ namespace Galaga
             }
         }
         public void AddExplosion(Vec2F position, Vec2F extent) {
-            // TODO: add explosion to the AnimationContainer
+            // adds explosion to the AnimationContainer
             
             StationaryShape sh1 = new StationaryShape(position, extent);
             ImageStride img = new ImageStride(8,explosionStrides);

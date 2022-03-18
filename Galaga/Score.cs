@@ -3,6 +3,8 @@ using DIKUArcade.Math;
 using System;
 
 namespace Galaga {
+
+    // create, displays and updates the score on the screen
     public class Score {
         private int score;
         private Text display;
