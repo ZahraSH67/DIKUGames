@@ -50,6 +50,7 @@ namespace Galaga {
             squadron2.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
             Squadron3 squadron3 = new Squadron3(images,images_red);
             squadron3.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
+            theSquad = new Squadron1(images, images_red);
 
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
