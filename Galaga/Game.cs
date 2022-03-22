@@ -1,20 +1,18 @@
 using DIKUArcade;
 using DIKUArcade.GUI;
 using DIKUArcade.Input;
-using System.IO;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System.Security.Principal;
-using System.Collections.Generic;
 using DIKUArcade.Events;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
 using Galaga.MovementStrategy;
 using System;
+using System.IO;
+using System.Collections.Generic;
 
-namespace Galaga
-{
+namespace Galaga {
     public class Game : DIKUGame, IGameEventProcessor
     {
         private Player player;
@@ -28,6 +26,7 @@ namespace Galaga
         private const int EXPLOSION_LENGTH_MS = 500;
         private ZigZagDown downMove = new ZigZagDown();
         private Score scoreHandler;
+        private Gamestate gamestate = new Gamestate();
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             // Player is the avatar of the ship the player controls
             player = new Player(
@@ -85,9 +84,21 @@ namespace Galaga
                             shot.DeleteEntity();
                             if (enemy.isAlive() == false) {
                                 AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
-                                enemy.DeleteEntity(); 
+                                enemy.DeleteEntity();
+                                
                                 scoreHandler.AddPoints();
+                                // virker ikke 
+                                if (Enemies.CountEntities() == 1) {
+                                    Enemies.ClearContainer();
 
+                                    var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
+                                    var images_red = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
+
+                                    Squadron1 newSquad = new Squadron1(images, images_red);
+                                    newSquad.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
+
+                                    downMove.movementSpeed *= 2;
+                                }
                             }                                             
                         }
                     });
@@ -112,19 +123,26 @@ namespace Galaga
         }
 
         public override void Render() {
-            player.Render();
-            Enemies.RenderEntities();
-            playerShots.RenderEntities();
-            enemyExplosions.RenderAnimations();
+            if (gamestate.State == gs.gameActive) {
+                player.Render();
+                Enemies.RenderEntities();
+                playerShots.RenderEntities();
+                enemyExplosions.RenderAnimations();
+            }
+
             scoreHandler.RenderScore();
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             eventBus.ProcessEventsSequentially();
-            player.Move();
-            downMove.MoveEnemies(Enemies);
-            IterateShots();
+            
+            if (gamestate.State == gs.gameActive) {
+                player.Move();
+                downMove.MoveEnemies(Enemies);
+                IterateShots();
+            }
+
+            //gamestate.GameOver(Enemies);       
         }
 
         // KeyPress gives the program on what the program 

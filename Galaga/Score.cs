@@ -20,6 +20,5 @@ namespace Galaga {
         public void RenderScore() {
             display.RenderText();
         }
-
     }
 }
