@@ -65,13 +65,37 @@ namespace Galaga.GalagaStates {
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
-            GalagaBus.GetBus().RegisterEvent(
-                new GameEvent {
-                    EventType = GameEventType.GameStateEvent,
-                    Message = "CHANGE_STATE",
-                    StringArg1 = "GAME_RUNNING"
-                }
-            );}
+            GameEvent gameEvent = new GameEvent();
+            gameEvent.EventType = GameEventType.InputEvent;
+            switch (action) {
+                case KeyboardAction.KeyPress:
+                    gameEvent.Message = "KeyPress";
+                    break;
+                case KeyboardAction.KeyRelease:
+                    gameEvent.Message = "KeyRelease";
+                    break;
+            }
+        }
+
+        void KeyPress(KeyboardKey key) {
+            switch (key) {
+                    case KeyboardKey.Space :
+                    GalagaBus.GetBus().RegisterEvent(
+                        new GameEvent {
+                            EventType = GameEventType.GameStateEvent,
+                            Message = "CHANGE_STATE",
+                            StringArg1 = "GAME_RUNNING"
+                        }
+                    );
+                    break;
+            //     case KeyboardKey.Up :
+            //         Text[i] = Text[i]--;
+            //         break;
+            //     case KeyboardKey.Down :
+            //         Text[i] = Text[i]++;
+            //         break;
+            }
+        }
 
     }
 }
