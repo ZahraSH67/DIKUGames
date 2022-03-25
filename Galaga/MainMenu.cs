@@ -31,19 +31,15 @@ namespace Galaga.GalagaStates {
 
         public void RenderState() {
             backGroundImage.RenderEntity();
+            menuButtons[0].RenderText();
+            menuButtons[1].RenderText();
         }
 
         public void InitializeGameState () {
             
         }
 
-        // GalagaBus.GetBus().RegisterEvent(
-        //     new GameEvent {
-        //         EventType = GameEventType.GameStateEvent,
-        //         Message = "CHANGE_STATE",
-        //         StringArg1 = "GAME_RUNNING"
-        //     }
-        // };
+        
 
         /// <summary>
         /// Reset this state to set its private variables to their initial default
@@ -59,12 +55,18 @@ namespace Galaga.GalagaStates {
         /// Update all variables that are being used by this GameState.
         /// </summary>
         public void UpdateState() {
+            GalagaBus.GetBus().ProcessEventsSequentially();
 
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
-
-        }
+            GalagaBus.GetBus().RegisterEvent(
+                new GameEvent {
+                    EventType = GameEventType.GameStateEvent,
+                    Message = "CHANGE_STATE",
+                    StringArg1 = "GAME_RUNNING"
+                }
+            );}
 
     }
 }
