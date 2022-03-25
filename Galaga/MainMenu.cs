@@ -15,11 +15,16 @@ namespace Galaga.GalagaStates {
         private static MainMenu instance = null;
         private Entity backGroundImage;
         private Text[] menuButtons;
+        private Text NewGame;
+        private Text Quit;
         private int activeMenuButton;
         private int maxMenuButtons;
 
         public MainMenu() {
-            
+            NewGame = new Text ("NEW GAME", new Vec2F(0.2f,0.5f), new Vec2F(0.2f,0.5f));
+            Quit = new Text ("Quit", new Vec2F(0.0f,0.0f), new Vec2F(0.0f,0.0f));
+            Text[] menuButtons = new Text[] {NewGame, Quit};
+
         }
         public static MainMenu GetInstance() {
             if (MainMenu.instance == null) {
