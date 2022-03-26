@@ -133,7 +133,7 @@ namespace Galaga {
                 IterateShots();
             }
 
-            //gamestate.GameOver(Enemies);       
+            gamestate.GameOver(Enemies);       
         }
         public void KeyPress(KeyboardKey key) {}
         public void KeyRelease(KeyboardKey key) {
