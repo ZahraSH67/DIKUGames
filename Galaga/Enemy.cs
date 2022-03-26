@@ -13,6 +13,8 @@ namespace Galaga {
         //private Graphics IBaseImage;
         public IBaseImage Enrage { get; set; }
         public Vec2F StartingPosition {get;set;}
+
+        public float MOVEMENT_SPEED {get; set;} = 0.0005f;
         
         public Enemy(DynamicShape shape, IBaseImage image, IBaseImage enrage) : base(shape, image) {
             Enrage = enrage;
@@ -23,6 +25,7 @@ namespace Galaga {
             hitpoints--;
             if (hitpoints == 2) {
                 Image = Enrage;
+                MOVEMENT_SPEED = MOVEMENT_SPEED*3;
             }
         }
         

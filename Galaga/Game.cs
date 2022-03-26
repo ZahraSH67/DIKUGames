@@ -88,8 +88,8 @@ namespace Galaga {
 
                                     Squadron1 newSquad = new Squadron1(images, images_red);
                                     newSquad.Enemies.Iterate(enemy => Enemies.AddEntity(enemy));
-
-                                    downMove.movementSpeed *= 2;
+                                    newSquad.Enemies.Iterate(enemy => enemy.MOVEMENT_SPEED = enemy.MOVEMENT_SPEED*3);
+                                    //downMove.movementSpeed *= 2;
                                 }
                             }                                             
                         }
