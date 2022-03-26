@@ -6,25 +6,6 @@ using DIKUArcade.Math;
 using Galaga;
 
 namespace Galaga.MovementStrategy {
-    public class NoMove : IMovementStrategy {
-        public void MoveEnemy (Enemy enemy) {
-
-        }
-        public void MoveEnemies (EntityContainer<Enemy> enemies) {
-
-        }
-
-    }
-
-    public class Down : IMovementStrategy {
-        public void MoveEnemy (Enemy enemy) {
-            enemy.Shape.MoveY(-0.001f);
-        }
-        public void MoveEnemies (EntityContainer<Enemy> enemies) {
-            enemies.Iterate(enemy=>MoveEnemy(enemy));
-        }
-    }
-
     public class ZigZagDown : IMovementStrategy {
         private float _amplitude = 0.05f;
 
