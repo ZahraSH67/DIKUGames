@@ -8,7 +8,6 @@ using DIKUArcade.Events;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
 using Galaga.MovementStrategy;
-using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -33,12 +32,13 @@ namespace Galaga {
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
 
-            // eventBus takes input and transform it to actions
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
 
             window.SetKeyEventHandler(KeyHandler);
 
+
+            // eventBus takes input and transform it to actions
+            eventBus = new GameEventBus();
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
             eventBus.Subscribe(GameEventType.InputEvent, this); 
             eventBus.Subscribe(GameEventType.InputEvent, player);
 
